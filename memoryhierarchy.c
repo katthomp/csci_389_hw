@@ -2,7 +2,7 @@
 #include <time.h>
 
 float time_read_byte(N) {
-    int buffer_exp = 1024;
+    int buffer_size = 1024;
 
     /* make a buffer of size N of characters*/
     
