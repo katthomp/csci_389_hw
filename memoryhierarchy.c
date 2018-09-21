@@ -1,25 +1,49 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
-float time_read_byte(N) {
-    int buffer_exp = 1024;
-
-    /* make a buffer of size N of characters*/
-    
-
-
-    struct timespec start;
-struct timespec end;
-clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-
-/*read a byte here*/
+float time_read_byte(char* buffer, int buffer_size) {
 
 /*randomly generate choice to access in buffer*/
+const int BILLION = 1000000000;
+srand(12);
+
+int r = rand();
+int search_value = buffer_size * (r/RAND_MAX);
+
+struct timespec start, end;
+clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+
+char read = buffer[search_value];
 
 clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-float t; 
-t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
+float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
 
-    buffer_exp = buffer_exp<<1;
+return t;
 
+}
+
+float run_a_bunch() {
+
+    for (int buffer_size = 1024; buffer_size <  10^26; buffer_size<<1){
+
+        char* buffer = calloc(buffer_size,sizeof(char));
+
+        for (int i = 0; i < 100; i++) {
+            float t = time_read_byte(buffer, buffer_size);
+            printf("%f",t);
+
+        }
+
+        free(buffer);
+
+        return(0);
+    }
+
+}
+
+int main() {
+    
+
+    run_a_bunch();
 }
