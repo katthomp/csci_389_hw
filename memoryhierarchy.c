@@ -5,68 +5,51 @@
 
 float time_read_byte(char* buffer, int buffer_size) {
 
-/*randomly generate choice to access in buffer*/
-const int BILLION = 1000000000;
-srand(12);
+    /*randomly generate choice to access in buffer*/
+    const int BILLION = 1000000000;
+    srand(12);
 
-int r = rand();
-int search_value = buffer_size * (r/RAND_MAX);
-float time_read_byte(buffer, buffer_size) {
+    int r = rand();
+    int search_value = buffer_size * (r/RAND_MAX);
 
-/*randomly generate choice to access in buffer*/
-srand(12);
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
-int r = rand();
-int search_value = buffer_size * (r/RAND_MAX)
+    char read = buffer[search_value];
 
-struct timespec start, end;
-clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-
-char read = buffer[search_value];
-
-clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
 
 
-return t;
+    return t;
 
 }
 
-float run_a_bunch() {
+void run_a_bunch() {
 
-    for (int buffer_size = 1024; buffer_size <  10^26; buffer_size<<1){
+    for (int buffer_size = 1024; buffer_size <= 67108864; buffer_size = buffer_size<<1){
+
+        float sum = 0;
 
         char* buffer = calloc(buffer_size,sizeof(char));
 
         for (int i = 0; i < 100; i++) {
             float t = time_read_byte(buffer, buffer_size);
-            printf("%f",t);
+            //printf("%f\n",t);
+            sum = sum + t;
 
         }
 
+        float average = sum/100;
+        printf("buffer size: %d, average time: %f\n",buffer_size,average);
         free(buffer);
-
-        return(0);
+        
     }
-
 }
 
 int main() {
-    
-    for (int buffer_size = 1024, buffer_size <  10^26, buffer_size<<1){
-
-        char* buffer = calloc(buffer_size,size_of(char));
-
-        for (int i = 0, i < 100, i++) {
-            float t = time_read_byte(buffer, buffer_size);
-            printf(t)
-
-        }
-
-        free(buffer);
-
-        return(0);
-    }
 
     run_a_bunch();
+
+    return(0);
 }
