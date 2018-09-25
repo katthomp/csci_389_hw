@@ -6,9 +6,9 @@ float time_read_byte(char* buffer, int buffer_size) {
 
     /*randomly generate choice to access in buffer*/
     const int BILLION = 1000000000;
-    srand(12);
+    srand(buffer_size);
 
-    int r = rand();
+    int r = random();
     int search_value = buffer_size * (r/RAND_MAX);
 
     struct timespec start, end;
@@ -17,8 +17,7 @@ float time_read_byte(char* buffer, int buffer_size) {
     char read = buffer[search_value];
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-    float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
-
+    float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; //measuring in nanoseconds
 
     return t;
 
@@ -45,6 +44,8 @@ void run_a_bunch() {
         
     }
 }
+
+
 
 int main() {
 
