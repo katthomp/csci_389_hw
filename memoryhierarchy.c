@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 char do_something_with_read(char read){
     vread=read*2
     return Vread;
@@ -11,8 +12,11 @@ float time_read_byte(char* buffer, int buffer_size) {
 
     /*randomly generate choice to access in buffer*/
     const int BILLION = 1000000000;
+
     int r = rand();
     // int search_value = buffer_size * (r/RAND_MAX);
+
+
 
     /*make array of random byte locations to read in a loop while timing*/
 
@@ -43,9 +47,11 @@ float time_read_byte(char* buffer, int buffer_size) {
     }
     volatile char 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+
     float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
 
     float time_per_byte = t/buffer_size;
+
 
     return time_per_byte;
 
@@ -79,6 +85,7 @@ void run_a_bunch() {
         
     }
 }
+
 
 /*hypothesis for why it gets faster per byte as the buffer size increases:
 because we have the same number of iterations each time, it's biasing itself 
