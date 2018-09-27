@@ -1,86 +1,111 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <assert.h>
 
 
-char do_something_with_read(char read){
-    vread=read*2
-    return Vread;
-}
+// u_int32_t do_something_with_read(u_int32_t r){
+//     r=rand()%buffer_size;
+    
+//     // clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
-float time_read_byte(char* buffer, int buffer_size) {
+//     // clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+//     return r;
+// }
+// void print_sum(float sum){
+//     printf("(from print_sum) sum %f",sum);
+//     return;
+// }
+
+
+
+float time_read_byte(int buffer_size, char* order) {
 
     /*randomly generate choice to access in buffer*/
     const int BILLION = 1000000000;
-
-    int r = rand();
     // int search_value = buffer_size * (r/RAND_MAX);
-
-
 
     /*make array of random byte locations to read in a loop while timing*/
 
     //create array of order of bytes to search
 
-    int* order = malloc(buffer_size*sizeof(int8_t)); //this 
-    if(!order) {
-        perror("Didn't allocate memory correctly (order)");
-        exit(-1);
-    }
+     //this 
+    u_int32_t r;
 
     for (int i=0; i < buffer_size; i++){
-        int r = rand() % buffer_size;
+        r = rand() % (buffer_size+1);
         order[i] = r;
+        // assert(r >= 0);
     }
     // for (int j=0; j<10; j++){
     //     int bs=order[j];
     //     printf("Order %i ",bs );
     // }
-    
     struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+    
     volatile char read;
+    // char vread;
+    float sum_time=0;
+    
+    r=(rand())%buffer_size;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     for (int i = 0; i < buffer_size; i++) {
-        r=rand();
-        read = buffer[order[r]];
-        vread=do_something_with_read(read);
+        
+        
+        read = order[r];
+        
+         //need to create a way of editing the array each time, so that we pick a value at random
+        //however, make sure that it's getting each value
     }
-    volatile char 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-
-    float t = BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec; 
-
+    // print_sum(chksum);
+   float t=(BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec);
     float time_per_byte = t/buffer_size;
+//might make a function that's called repeatedly???
 
 
     return time_per_byte;
 
 }
 
+
 void run_a_bunch() {
 
-    const int NUMBER_RUNS = 10;
-
-    for (int buffer_size = 1024; buffer_size <= 67108864; buffer_size = buffer_size<<1){
+    int NUMBER_RUNS = 1000;
+    int counter=10;
+    int count=1;
+    for (int buffer_size = 512; buffer_size <= 67108864; buffer_size = buffer_size<<1){
 
         float sum = 0;
-
+        count+=1;
+        
+        if (count%3==0 && NUMBER_RUNS<=1){
+            counter+=10;
+            NUMBER_RUNS=NUMBER_RUNS/(10*counter);
+            
+        }
         // char* buffer = calloc(buffer_size,sizeof(char));
-
+        char* order = malloc(buffer_size*sizeof(char));
+            if(!order) {
+        perror("Didn't allocate memory correctly (order)");
+        exit(-1);
+        }
         char* buffer =malloc(sizeof(char)*buffer_size);
-        if (!buffer){
-            perror("Didn't allocate memory correctly (buffer)");
-
+            if(!buffer) {
+        perror("Didn't allocate memory correctly (buffer)");
+        exit(-1);
         }
         for (int i = 0; i < NUMBER_RUNS; i++) {
-            float t = time_read_byte(buffer, buffer_size);
+            float t = time_read_byte(buffer_size, order);
             //printf("%f\n",t);
             sum = sum + t;
 
         }
 
         float average = sum/NUMBER_RUNS;
-        printf("buffer size: %d, average time: %f\n",buffer_size,average);
+        // printf(average);
+        printf("buffer size: %d, average time: %f\n \n",buffer_size,average);
+        free(order);
         free(buffer);
         
     }
@@ -106,7 +131,6 @@ another problem with this:
 
 
 int main() {
-
     run_a_bunch();
 
     return(0);
