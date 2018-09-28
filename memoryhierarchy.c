@@ -46,16 +46,18 @@ float time_read_byte(int buffer_size, char* order) {
     volatile char read;
     // char vread;
     float sum_time=0;
-    
     r=(rand())%buffer_size;
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     for (int i = 0; i < buffer_size; i++) {
-        r= (u_int32_t) time(NULL);
-        r=r%buffer_size;
+        // r=(u_int32_t) time(NULL);
+        // r=r%buffer_size;
         read = order[r];
-         //need to create a way of editing the array each time, so that we pick a value at random
+        r= (r + i) & buffer_size;
+
+        //need to create a way of editing the array each time, so that we pick a value at random
         //however, make sure that it's getting each value
     }
+
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     // print_sum(chksum);
     float t=(BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec);
