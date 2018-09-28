@@ -43,7 +43,7 @@ float time_read_byte(int buffer_size, char* order) {
     // }
     struct timespec start, end;
     
-    volatile char read;
+    volatile int read;
     // char vread;
     float sum_time=0;
     r=(rand())%buffer_size;
@@ -52,7 +52,7 @@ float time_read_byte(int buffer_size, char* order) {
         // r=(u_int32_t) time(NULL);
         // r=r%buffer_size;
         read = order[r];
-        r= (r + i) & buffer_size;
+        r= (r + i+read) & buffer_size;
 
         //need to create a way of editing the array each time, so that we pick a value at random
         //however, make sure that it's getting each value
