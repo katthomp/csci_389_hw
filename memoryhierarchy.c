@@ -50,18 +50,16 @@ float time_read_byte(int buffer_size, char* order) {
     r=(rand())%buffer_size;
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     for (int i = 0; i < buffer_size; i++) {
-        
-        
+        r= (u_int32_t) time(NULL);
+        r=r%buffer_size;
         read = order[r];
-        
          //need to create a way of editing the array each time, so that we pick a value at random
         //however, make sure that it's getting each value
     }
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     // print_sum(chksum);
-   float t=(BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec);
+    float t=(BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec);
     float time_per_byte = t/buffer_size;
-//might make a function that's called repeatedly???
 
 
     return time_per_byte;
@@ -77,11 +75,11 @@ void run_a_bunch() {
     for (int buffer_size = 512; buffer_size <= 67108864; buffer_size = buffer_size<<1){
 
         float sum = 0;
-        count+=1;
+        
         
         if (count%3==0 && NUMBER_RUNS<=1){
-            counter+=10;
             NUMBER_RUNS=NUMBER_RUNS/(10*counter);
+            counter+=10;
             
         }
         // char* buffer = calloc(buffer_size,sizeof(char));
@@ -101,7 +99,7 @@ void run_a_bunch() {
             sum = sum + t;
 
         }
-
+        count+=1;
         float average = sum/NUMBER_RUNS;
         // printf(average);
         printf("buffer size: %d, average time: %f\n \n",buffer_size,average);
