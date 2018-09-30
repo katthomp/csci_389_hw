@@ -24,6 +24,7 @@ float time_read_byte(char* order, int buffer_size){
 } 
 
 void run_many(){
+    float average;
     int NUMBER_RUNS = 10;
     for (int buffer_size=START_SIZE_BYTES; buffer_size<=END_SIZE_BYTES;buffer_size = buffer_size<<1){
         float average=0;
@@ -37,7 +38,6 @@ void run_many(){
         perror("Didn't allocate memory correctly (buffer)");
         exit(-1);
     }
-        float average = 0;
         for (int i=0; i<buffer_size; ++i){
             float r=rand()%buffer_size;
             order[i]=r;
