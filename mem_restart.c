@@ -37,6 +37,7 @@ void run_many(){
         perror("Didn't allocate memory correctly (buffer)");
         exit(-1);
     }
+        float average = 0;
         for (int i=0; i<buffer_size; ++i){
             float r=rand()%buffer_size;
             order[i]=r;
