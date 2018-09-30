@@ -25,7 +25,6 @@ float time_read_byte(char* order, int buffer_size){
 
 void run_many(){
     int NUMBER_RUNS = 10;
-    int counter = 1;
     float average;
     for (int buffer_size=START_SIZE_BYTES; buffer_size<=END_SIZE_BYTES;buffer_size = buffer_size<<1){
         char* order = calloc(buffer_size,sizeof(char));
