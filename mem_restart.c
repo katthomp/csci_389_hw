@@ -12,10 +12,10 @@ float time_read_byte(char* order, int buffer_size){
         read=order[r];
         r=(j+r+read)&buffer_size;
     }
+    clock_gettime(CLOCK_MONOTONIC_RAW,&end);
     if (read==-1 || r==-1){
         printf("This is not supposed to happen");
     }
-    clock_gettime(CLOCK_MONOTONIC_RAW,&end);
     float t=(BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec);
     float time_per_byte = t/buffer_size;
     return time_per_byte;
