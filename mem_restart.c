@@ -4,6 +4,8 @@
 #include <assert.h>
 volatile char read;
 const int BILLION=1000000000;
+const int START_SIZE_BYTES = 1024;
+const int END_SIZE_BYTES = 67108864;
 float time_read_byte(char* order, int buffer_size){
     int r=0;
     struct timespec start, end;
@@ -24,7 +26,7 @@ float time_read_byte(char* order, int buffer_size){
 void run_many(){
     int NUMBER_RUNS = 10;
     float average;
-    for (int buffer_size=1024; buffer_size<=67108864;buffer_size = buffer_size<<1){
+    for (int buffer_size=START_SIZE_BYTES; buffer_size<=END_SIZE_BYTES;buffer_size = buffer_size<<1){
         char* order = calloc(buffer_size,sizeof(char));
             if(!order) {
             perror("Didn't allocate memory correctly (order)");
@@ -43,7 +45,7 @@ void run_many(){
         for (int i=0; i<NUMBER_RUNS; ++i){
             average+=time_read_byte(order, buffer_size);   
         }  
-        printf("buffer size: %d, average time: %f\n \n",buffer_size,average/NUMBER_RUNS); 
+        printf("buffer size (KB): %d, average time (ns): %f\n \n",buffer_size/1024,average/NUMBER_RUNS); 
     free(order);
     free(buffer);
 }
