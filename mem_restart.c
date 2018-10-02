@@ -32,8 +32,14 @@ float time_read_byte(char* order, int buffer_size){
     return time_per_byte;
 } 
 
+<<<<<<< HEAD
 int run_many(){
     int NUMBER_RUNS = 100;
+=======
+void run_many(){
+    float average;
+    int NUMBER_RUNS = 10;
+>>>>>>> ca4bc2bbd3ab9a48b333323b38dcbe33327b570a
     for (int buffer_size=START_SIZE_BYTES; buffer_size<=END_SIZE_BYTES;buffer_size = buffer_size<<1){
         printf("HELP ME");
         float average=0;
@@ -46,7 +52,7 @@ int run_many(){
         if(!buffer) {
         perror("Didn't allocate memory correctly (buffer)");
         exit(-1);
-    }   
+
         for (int i=0; i<buffer_size; ++i){
             float r=rand()%buffer_size;
             // printf("read %f", r);
