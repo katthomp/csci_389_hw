@@ -17,9 +17,9 @@
 //     return;
 // }
 
+char read;
 
-
-float time_read_byte(int buffer_size, char* order) {
+float time_read_byte(int buffer_size, char* order, char* buffer) {
 
     /*randomly generate choice to access in buffer*/
     const int BILLION = 1000000000;
@@ -33,7 +33,7 @@ float time_read_byte(int buffer_size, char* order) {
     u_int32_t r;
 
     for (int i=0; i < buffer_size; i++){
-        r = rand() % (buffer_size+1);
+        r = rand() % (buffer_size);
         order[i] = r;
         // assert(r >= 0);
     }
@@ -43,16 +43,26 @@ float time_read_byte(int buffer_size, char* order) {
     // }
     struct timespec start, end;
     
-    volatile int read;
     // char vread;
-    float sum_time=0;
+    
     r=(rand())%buffer_size;
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-    for (int i = 0; i < buffer_size; i++) {
-        // r=(u_int32_t) time(NULL);
-        // r=r%buffer_size;
-        read = order[r];
-        r= (r + i+read) & buffer_size;
+    for (int i = 0; i < buffer_size; ++i) {
+        // r=(u_int32_t) time (NULL)&buffer_size;
+        r=(r+i+(read&4))%buffer_size;
+        read += buffer[r];
+        // if (i<buffer_size-8){
+        //     read = order[r+1];
+        //     read = order[r+2];
+        //     read = order[r+3];
+        //     read = order[r+4];
+        //     read = order[r+5];
+        //     read = order[r+6];
+        //     read = order[r+7];
+        // }
+        
+        
+        // r= (r+read+i) & buffer_size;
 
         //need to create a way of editing the array each time, so that we pick a value at random
         //however, make sure that it's getting each value
@@ -63,6 +73,9 @@ float time_read_byte(int buffer_size, char* order) {
     float t=(BILLION*(end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec);
     float time_per_byte = t/buffer_size;
 
+    if (read == -1) {
+        printf("ha!");
+    }
 
     return time_per_byte;
 
@@ -71,7 +84,7 @@ float time_read_byte(int buffer_size, char* order) {
 
 void run_a_bunch() {
 
-    int NUMBER_RUNS = 1000;
+    int NUMBER_RUNS = 10;
     int counter=10;
     int count=1;
     for (int buffer_size = 512; buffer_size <= 67108864; buffer_size = buffer_size<<1){
@@ -85,18 +98,18 @@ void run_a_bunch() {
             
         }
         // char* buffer = calloc(buffer_size,sizeof(char));
-        char* order = malloc(buffer_size*sizeof(char));
+        char* order = calloc(buffer_size,sizeof(char));
             if(!order) {
         perror("Didn't allocate memory correctly (order)");
         exit(-1);
         }
-        char* buffer =malloc(sizeof(char)*buffer_size);
+        char* buffer =calloc(buffer_size, sizeof(char));
             if(!buffer) {
         perror("Didn't allocate memory correctly (buffer)");
         exit(-1);
         }
         for (int i = 0; i < NUMBER_RUNS; i++) {
-            float t = time_read_byte(buffer_size, order);
+            float t = time_read_byte(buffer_size, order, buffer);
             //printf("%f\n",t);
             sum = sum + t;
 
@@ -133,5 +146,15 @@ another problem with this:
 int main() {
     run_a_bunch();
 
-    return(0);
+    return read;
 }
+/* 
+References:
+
+https://stackoverflow.com/questions/21369381/measuring-cache-latencies
+
+https://softwareengineering.stackexchange.com/questions/302354/memory-cache-performance-in-working-with-arrays-in-c
+
+
+
+*/
