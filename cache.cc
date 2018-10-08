@@ -27,6 +27,7 @@ struct Cache::Impl{
 //* Sets the actual size of the returned value (in bytes) in val_size.
 Cache::Cache(index_type maxmem, evictor_type evictor, hash_func hasher)
     :pImpl_(new Impl())
+{}
 
 
 Cache::val_type Cache::get(key_type key, index_type& val_size)const{
