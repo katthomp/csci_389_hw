@@ -25,7 +25,7 @@ struct Cache::Impl{
 //* Retrieve a pointer to the value associated with key in the cache,
 //* or NULL if not found.
 //* Sets the actual size of the returned value (in bytes) in val_size.
-Cache::Cache(index_type maxmem, evictor_type evictor, hash_func hasher )
+Cache::Cache(index_type maxmem, evictor_type evictor, hash_func hasher)
     :pImpl_(new Impl())
 
 
