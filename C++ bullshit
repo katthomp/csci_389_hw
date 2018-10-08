@@ -1,0 +1,73 @@
+#include<iostream>
+#include <cache.hh>
+using namespace std;
+
+class Cache::Impl {
+
+ public:
+    //write methods here!!! then call w/single line in methods below
+  using key_type = Cache::key_type;  // Keys for K-V pairs
+  using val_type = const void*;        // Values for K-V pairs
+  using index_type = uint32_t;         // Internal indexing to K-V elements
+  // A function that takes a key and returns an index to the internal data
+  using hash_func = std::function<uint32_t(key_type)>;
+  // A function that returns an index to the next element to evict
+  using evictor_type = std::function<uint32_t(void)>;
+
+/*
+  key_type keys_[128];
+  value_type values_[128];
+  unsigned how_many_so_far_; 
+  index_type totalmem_;
+
+  hash_func hasher_;
+  evictor_type ecvictor_;
+*/
+  Impl(hash_func hasher, evictor_type evictor, int maxmem)
+  : hasher_(hasher), evictor(evic)
+  {
+    other stuff to initialize
+  }
+
+  void add_pair(key_type key, value_type value, index_type size)
+  {
+  //  std::vector
+  //  std::unorderd_map
+  }
+
+};
+
+
+  // Create a new cache object with a given maximum memory capacity.
+  Cache::Cache(index_type maxmem, evictor_type evictor = [](){ return 0; },
+        hash_func hasher = std::hash<std::string>());
+
+    :array = calloc(maxmem, sizeOf(char))
+
+    : pimpl_(new Impl(hasher_, evictor_, mamxem))
+    pimpl_->value_ = 0;
+
+  Cache::~Cache(){
+
+  }
+  // Disallow cache copies, to simplify memory management.
+
+  // Add a <key, value> pair to the cache.
+  // If key already exists, it will overwrite the old value.
+  // Both the key and the value are to be deep-copied (not just pointer copied).
+  // If maxmem capacity is exceeded, sufficient values will be removed
+  // from the cache to accomodate the new value.
+void Cache::set(key_type key, val_type val, index_type size){
+    pimpl_->add_pair(key, val, size);
+}
+
+  // Retrieve a pointer to the value associated with key in the cache,
+  // or NULL if not found.
+  val_type get(key_type key) const;
+
+  // Delete an object from the cache, if it's still there
+  void del(key_type key);
+
+  // Compute the total amount of memory used up by all cache values (not keys)
+  index_type space_used() const;
+
