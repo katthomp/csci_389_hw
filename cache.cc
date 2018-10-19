@@ -14,39 +14,45 @@ struct Cache::Impl{
       }
     };
 */
-    index_type maxmem=32*sizeof(char); //starting by implementing a Very Small Cache for Testing
+    const index_type maxmem; //starting by implementing a Very Small Cache for Testing
     std::unordered_map<std::string, const void*, hash_func> umap;
     std::unordered_map<std::string, unsigned int> space_map;
-    int space = 0;
+    // int space = 0; //unsure if we need this, because we can just call .size for unordered map
     hash_func hasher_;
-
+    double max_load_factor;
+    std::list actual_cache_struct; //actually how the cache is structured, I think. 
     Impl(hash_func hasher, evictor_type evictor, int maxmem)
 
-    : umap(0, hasher), evictor_(evictor)
+    : umap(0, hasher)
     {
       umap.max_load_factor(0.5);
     //other stuff to initialize
     //set max_load_factor for unordered map! (to 0.5)
-    //
     }
-
+    : actual_cache_struct.resize(maxmem); //is this where I define these things? unsure where to put these
+    : space_map.resize(maxmem);
     void del(key_type key){
       space = space - space_map[key];
       umap.erase(key);
+      actual_cache_struct.erase(key);
       return;
     }
-    void evictor(double load_factor){
-        if load_factor>0.5:
-            //need to evict the first thing in the cache
-            
+    //implementing FIFO policy, will make a new file with LRU
+    void evictor(){
+        std::unordered_map to_evict; //supposedly each thing in the cache is a map. 
+        if (umap.load_factor()>=umap.max_load_factor()){
+            space_evict=space-space_map[key]
+            to_evict=actual_cache_struct.pop_front() //ideally, would use del here, but, unsure of how to make it work
+        }
         return;
     }
-    double load_factor(int space){
-        //need to find how many buckets are in unordered map
-        //got through all the keys in space map, count how many there are, that's how many buckets
-        
-        return;
-    }
+    // double load_factor(unordered_map space_map, index_type maxmem){
+    //     if (space_map.empty()){
+    //         return 0;
+    //     }
+    //     double load_factor=space_map.size()/maxmem;
+    //     return load_factor;
+    // }
     val_type get(key_type key, index_type& val_size){
       if (umap.count(key) == 0){
         return NULL;
@@ -58,18 +64,22 @@ struct Cache::Impl{
     }
 
     index_type space_used(){
+        for (unsigned int i=0; i<=umap.buket_count(); i++){ //want to use the iterator to see if that space is used
+
+        }
       return space;
 
     }
 
     void set(key_type key, val_type value, index_type size){
+        index_type space=space_used();
       if (space + size <= maxmem){
         auto void_val = static_cast<const void*>(value);
         umap[key] = void_val;
         space_map[key] = size;
         space += size;
       } else {
-        //call evictor policy here!!!
+        evictor();
         printf("no more space!");
       }
     
