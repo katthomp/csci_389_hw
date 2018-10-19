@@ -9,7 +9,6 @@ struct Cache::Impl{
     std::unordered_map<std::string, unsigned int> space_map;
     int space = 0;
     hash_func hasher_;
-    evictor_type evictor_;
 
     Impl(hash_func hasher, evictor_type evictor, int maxmem)
 
@@ -22,7 +21,18 @@ struct Cache::Impl{
       umap.erase(key);
       return;
     }
-
+    void evictor(double load_factor){
+        if load_factor>0.5:
+            //need to evict the first thing in the cache
+            
+        return;
+    }
+    double load_factor(int space){
+        //need to find how many buckets are in unordered map
+        //got through all the keys in space map, count how many there are, that's how many buckets
+        
+        return;
+    }
     val_type get(key_type key, index_type& val_size){
       val_size = space_map[key];
       return umap[key];
@@ -100,3 +110,17 @@ int main(){
 
   Cache* cache_pointer = new Cache(32, NULL, NULL);
 }
+
+/*
+So, my data is itself void* containers of memory, which are indexed by keys. But right now there
+is no organization over the keys themselves. I need to make some sort of linked structure to implement FIFO, and 
+later to implement LRU.
+
+
+*/
+
+
+
+
+
+
