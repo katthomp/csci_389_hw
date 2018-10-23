@@ -4,6 +4,10 @@
 #include <cassert>
 #include <iostream>
 #include <list>
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 using namespace std;
 
 struct Cache::Impl{
@@ -14,34 +18,34 @@ struct Cache::Impl{
       }
     };
 */
-    const index_type maxmem; //starting by implementing a Very Small Cache for Testing
-    unordered_map<string, const void*, hash_func> umap;
-    unordered_map<string, unsigned int> space_map;
-    // int space = 0; //unsure if we need this, because we can just call .size for unordered map
+
+    const index_type maxmem = 32*sizeof(char); //starting by implementing a Very Small Cache for Testing
+    std::unordered_map<std::string, const void*, hash_func> umap;
+    std::unordered_map<std::string, unsigned int> space_map;
+    int space = 0; //unsure if we need this, because we can just call .size for unordered map
     hash_func hasher_;
-    list <key_type key> actual_cache_struct; //actually how the cache is structured, I think. 
-    Impl(hash_func hasher, evictor, int maxmem)
+    list<key_type> actual_cache_struct; //actually how the cache is structured, I think. 
+    Impl(hash_func hasher, evictor_type evictor, int maxmem)
 
     : umap(0, hasher)
     {
       umap.max_load_factor(0.5);
+      actual_cache_struct.resize(maxmem);
+      //space_map.resize(maxmem);
     //other stuff to initialize
-    //set max_load_factor for unordered map! (to 0.5)
     }
-    : actual_cache_struct.resize(maxmem); //is this where I define these things? unsure where to put these
     void del(key_type key){
       space = space - space_map[key];
       umap.erase(key);
-      actual_cache_struct.erase(key);
+      actual_cache_struct.remove(key);
       return;
     }
     //implementing FIFO policy, will make a new file with LRU
     void evictor(){
-        std::unordered_map to_evict; //supposedly each thing in the cache is a map. 
-        if (umap.load_factor()>=umap.max_load_factor()){
-            space_evict=space-space_map[key]
-            to_evict=actual_cache_struct.pop_front() //ideally, would use del here, but, unsure of how to make it work
-        }
+        key_type k = actual_cache_struct.front(); //get key from front of actual_cache_struct
+        space = space - space_map[k];
+        space_map.erase(k);
+        actual_cache_struct.pop_front(); //ideally, would use del here, but, unsure of how to make it work
         return;
     }
     // double load_factor(unordered_map space_map, index_type maxmem){
@@ -62,29 +66,22 @@ struct Cache::Impl{
     }
 
     index_type space_used(){
-        // unsigned int space;
-        // for (unsigned int i=0; i<=umap.bucket_count(); i++){ //want to use the iterator to see if that space is used
-            
-        // }
       return space;
 
     }
 
     void set(key_type key, val_type value, index_type size){
         index_type space=space_used();
-      if (space + size <= maxmem){
-        auto void_val = static_cast<const void*>(value);
-        umap[key] = void_val;
-        space_map[key] = size;
-        space += size;
-      } else {
+      while (space + size > maxmem){
         evictor();
-        printf("no more space!");
       }
-    
+      auto void_val = static_cast<const void*>(value);
+      umap[key] = void_val;
+      space_map[key] = size;
+      space += size; 
     }
 
-    key_type key=0;
+    //key_type key=0;
 };
 
 //* Retrieve a pointer to the value associated with key in the cache,
@@ -151,12 +148,4 @@ int main(){
 So, my data is itself void* containers of memory, which are indexed by keys. But right now there
 is no organization over the keys themselves. I need to make some sort of linked structure to implement FIFO, and 
 later to implement LRU.
-
-
 */
-
-
-
-
-
-
