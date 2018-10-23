@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <cassert>
 #include <iostream>
-
+#include <list>
 using namespace std;
 
 struct Cache::Impl{
@@ -15,13 +15,12 @@ struct Cache::Impl{
     };
 */
     const index_type maxmem; //starting by implementing a Very Small Cache for Testing
-    std::unordered_map<std::string, const void*, hash_func> umap;
-    std::unordered_map<std::string, unsigned int> space_map;
+    unordered_map<string, const void*, hash_func> umap;
+    unordered_map<string, unsigned int> space_map;
     // int space = 0; //unsure if we need this, because we can just call .size for unordered map
     hash_func hasher_;
-    double max_load_factor;
-    std::list actual_cache_struct; //actually how the cache is structured, I think. 
-    Impl(hash_func hasher, evictor_type evictor, int maxmem)
+    list <key_type key> actual_cache_struct; //actually how the cache is structured, I think. 
+    Impl(hash_func hasher, evictor, int maxmem)
 
     : umap(0, hasher)
     {
@@ -30,7 +29,6 @@ struct Cache::Impl{
     //set max_load_factor for unordered map! (to 0.5)
     }
     : actual_cache_struct.resize(maxmem); //is this where I define these things? unsure where to put these
-    : space_map.resize(maxmem);
     void del(key_type key){
       space = space - space_map[key];
       umap.erase(key);
@@ -64,9 +62,10 @@ struct Cache::Impl{
     }
 
     index_type space_used(){
-        for (unsigned int i=0; i<=umap.buket_count(); i++){ //want to use the iterator to see if that space is used
-
-        }
+        // unsigned int space;
+        // for (unsigned int i=0; i<=umap.bucket_count(); i++){ //want to use the iterator to see if that space is used
+            
+        // }
       return space;
 
     }
@@ -91,7 +90,7 @@ struct Cache::Impl{
 //* Retrieve a pointer to the value associated with key in the cache,
 //* or NULL if not found.
 //* Sets the actual size of the returned value (in bytes) in val_size.
-Cache::Cache(index_type maxmem, evictor_type evictor, hash_func hasher)
+Cache::Cache(index_type maxmem, evictor, hash_func hasher)
     :pImpl_(new Impl(hasher,evictor,maxmem))
     {}
 
