@@ -1,4 +1,3 @@
-
 #include "cache.hh"
 #include <unordered_map>
 #include <cassert>
@@ -8,54 +7,41 @@
 using namespace std;
 
 struct Cache::Impl{
-/*
-    struct MyHasherWrapper {
-      index_type operator()(key_type key) const {
-        return hasher_(key);
-      }
-    };
-*/
-    const index_type maxmem = 32*sizeof(char); //starting by implementing a Very Small Cache for Testing
+
+    const index_type maxmem = 4*sizeof(char); //implementing a Very Small Cache for Testing
     std::unordered_map<std::string, const void*, hash_func> umap;
     std::unordered_map<std::string, unsigned int> space_map;
-    int space = 0; //unsure if we need this, because we can just call .size for unordered map
+    int space = 0; 
     hash_func hasher_;
-    list<key_type> actual_cache_struct; //actually how the cache is structured, I think. 
+    list<key_type> actual_cache_struct; 
     Impl(hash_func hasher, evictor_type evictor, int maxmem)
 
     : umap(0, hasher)
     {
       umap.max_load_factor(0.5);
-      actual_cache_struct.resize(maxmem);
-      //space_map.resize(maxmem);
-    //other stuff to initialize
     }
     
     void del(key_type key){
       space = space - space_map[key];
       umap.erase(key);
+      space_map.erase(key);
       actual_cache_struct.remove(key);
       return;
     }
-    //implementing FIFO policy, will make a new file with LRU
+    //implementing FIFO policy
     void evictor(){
       if (actual_cache_struct.size() == 0){
           cout << "The cache is already empty, what are you doing?\n";
           return;
         }
-        key_type k = actual_cache_struct.front(); //get key from front of actual_cache_struct
+        key_type k = actual_cache_struct.front(); 
         space = space - space_map[k];
         space_map.erase(k);
-        actual_cache_struct.pop_front(); //ideally, would use del here, but, unsure of how to make it work
+        umap.erase(k);
+        actual_cache_struct.pop_front();
         return;
     }
-    // double load_factor(unordered_map space_map, index_type maxmem){
-    //     if (space_map.empty()){
-    //         return 0;
-    //     }
-    //     double load_factor=space_map.size()/maxmem;
-    //     return load_factor;
-    // }
+
     val_type get(key_type key, index_type& val_size){
       if (umap.count(key) == 0){
         return NULL;
@@ -72,22 +58,32 @@ struct Cache::Impl{
     }
 
     void set(key_type key, val_type value, index_type size){
-        index_type space=space_used();
+
+        cout << "before the while!\n";
+        cout << "maxmem: ";
+        cout << maxmem;
+        cout << "space: ";
+        cout << space;
+        cout << "size: ";
+        cout << size;
+
       while (space + size > maxmem){
+        std::cout << "in loop" << "\t" << space << "\n";
+        cout << "inside the while\n";
         evictor();
       }
       auto void_val = static_cast<const void*>(value);
       umap[key] = void_val;
       space_map[key] = size;
       space += size; 
+      actual_cache_struct.push_back(key);
+      cout << "space: ";
+      cout << space << "\n";
+
     }
 
-    //key_type key=0;
 };
 
-//* Retrieve a pointer to the value associated with key in the cache,
-//* or NULL if not found.
-//* Sets the actual size of the returned value (in bytes) in val_size.
 Cache::Cache(index_type maxmem, evictor_type evictor, hash_func hasher)
     :pImpl_(new Impl(hasher,evictor,maxmem))
     {}
@@ -97,31 +93,27 @@ Cache::~Cache(){
 }
 
 Cache::val_type Cache::get(key_type key, index_type& val_size)const{
-    //need to point to a pointer
+  
     return pImpl_->get(key,val_size);
 }
-//* Compute the total amount of memory used up by all cache values (not keys)
+
 Cache::index_type Cache::space_used()const{
-    //unsure of how it's pointing to all of the places in memory
-    //very unsure of how to traverse this
+
     return pImpl_->space_used();
 }
-//* Delete an object from the cache, if it's still there
+
 void Cache::del(key_type key){
     pImpl_->del(key);
     return;
 }
-//* Add a <key, value> pair to the cache.
-//* If key already exists, it will overwrite the old value.
-//* Both the key and the value are to be deep-copied (not just pointer copied).
-//* If maxmem capacity is exceeded, sufficient values will be removed
-//* from the cache to accomodate the new value.
+
 void Cache::set(key_type key, val_type value, index_type size){
     pImpl_->set(key,value,size);
     return;
 }
 
 int main(){
+
   hash<string> hash_function;  
 
   unsigned int asize = sizeof(unsigned int);
@@ -134,9 +126,8 @@ int main(){
   int* six = (int*)malloc(sizeof(int));
   *six = 6;
 
-  char* alphabet = (char*)malloc(26*sizeof(char));
-  *alphabet = "abcdefghijklmnopqrstuvwxyz";
-
+   int* four = (int*)malloc(sizeof(int));
+  *four = 4;
 
   cache_pointer->set("key1",eight,sizeof(unsigned int&));
   Cache::val_type get_val = cache_pointer->get("key1",asize);
@@ -153,12 +144,14 @@ int main(){
   assert(*(unsigned int*)get_va==6);
   cout << "The set and get methods did the thing again!\n";
 
-  cache_pointer->set("key2",alphabet,sizeof(26*char&));
-  Cache::val_type get_alph = cache_pointer->get("key2",sizeof(char&)*26);
-  assert(*(char*)get_va=="abcdefghijklmnopqrstuvwxyz");
-  cout << "it worked!\n";
+  cache_pointer->set("key2",four,sizeof(unsigned int&));
+  Cache::val_type get_v = cache_pointer->get("key2",asize);
+  assert(*(unsigned int*)get_v==4);
+  cout << "Added a second key/value pair worked\n";
   Cache::val_type get_val_de = cache_pointer->get("key1",asize);
+  
   assert((unsigned int*)get_val_de==NULL);
+  cout << "the evictor worked! \n";
 
 }
 
