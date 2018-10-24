@@ -4,10 +4,7 @@
 #include <cassert>
 #include <iostream>
 #include <list>
-<<<<<<< HEAD
-=======
 
->>>>>>> refs/remotes/origin/master
 using namespace std;
 
 struct Cache::Impl{
@@ -18,7 +15,6 @@ struct Cache::Impl{
       }
     };
 */
-
     const index_type maxmem = 32*sizeof(char); //starting by implementing a Very Small Cache for Testing
     std::unordered_map<std::string, const void*, hash_func> umap;
     std::unordered_map<std::string, unsigned int> space_map;
@@ -34,6 +30,7 @@ struct Cache::Impl{
       //space_map.resize(maxmem);
     //other stuff to initialize
     }
+    
     void del(key_type key){
       space = space - space_map[key];
       umap.erase(key);
@@ -42,6 +39,10 @@ struct Cache::Impl{
     }
     //implementing FIFO policy, will make a new file with LRU
     void evictor(){
+      if (actual_cache_struct.size() == 0){
+          cout << "The cache is already empty, what are you doing?\n";
+          return;
+        }
         key_type k = actual_cache_struct.front(); //get key from front of actual_cache_struct
         space = space - space_map[k];
         space_map.erase(k);
@@ -87,7 +88,7 @@ struct Cache::Impl{
 //* Retrieve a pointer to the value associated with key in the cache,
 //* or NULL if not found.
 //* Sets the actual size of the returned value (in bytes) in val_size.
-Cache::Cache(index_type maxmem, evictor, hash_func hasher)
+Cache::Cache(index_type maxmem, evictor_type evictor, hash_func hasher)
     :pImpl_(new Impl(hasher,evictor,maxmem))
     {}
 
@@ -130,6 +131,13 @@ int main(){
   int* eight = (int*)malloc(sizeof(int));
   *eight = 8;
 
+  int* six = (int*)malloc(sizeof(int));
+  *six = 6;
+
+  char* alphabet = (char*)malloc(26*sizeof(char));
+  *alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+
   cache_pointer->set("key1",eight,sizeof(unsigned int&));
   Cache::val_type get_val = cache_pointer->get("key1",asize);
   assert(*(unsigned int*)get_val==8);
@@ -138,14 +146,19 @@ int main(){
   cache_pointer->del("key1");
   Cache::val_type get_val_del = cache_pointer->get("key1",asize);
   assert((unsigned int*)get_val_del==NULL);
-  cout << "The del method did the thing!\n";  
+  cout << "The del method did the thing!\n";
 
-  //add like 20 things and check size
- //check space used
+  cache_pointer->set("key1",six,sizeof(unsigned int&));
+  Cache::val_type get_va = cache_pointer->get("key1",asize);
+  assert(*(unsigned int*)get_va==6);
+  cout << "The set and get methods did the thing again!\n";
+
+  cache_pointer->set("key2",alphabet,sizeof(26*char&));
+  Cache::val_type get_alph = cache_pointer->get("key2",sizeof(char&)*26);
+  assert(*(char*)get_va=="abcdefghijklmnopqrstuvwxyz");
+  cout << "it worked!\n";
+  Cache::val_type get_val_de = cache_pointer->get("key1",asize);
+  assert((unsigned int*)get_val_de==NULL);
+
 }
 
-/*
-So, my data is itself void* containers of memory, which are indexed by keys. But right now there
-is no organization over the keys themselves. I need to make some sort of linked structure to implement FIFO, and 
-later to implement LRU.
-*/
