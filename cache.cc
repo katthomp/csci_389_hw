@@ -4,10 +4,6 @@
 #include <cassert>
 #include <iostream>
 #include <list>
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/master
 using namespace std;
 
 struct Cache::Impl{
@@ -139,6 +135,7 @@ int main(){
   Cache::val_type get_val_del = cache_pointer->get("key1",asize);
   assert((unsigned int*)get_val_del==NULL);
   cout << "The del method did the thing!\n";  
+
 
   //add like 20 things and check size
  //check space used
