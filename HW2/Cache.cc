@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <list>
+
 using namespace std;
 
 struct Cache::Impl{
@@ -151,11 +152,6 @@ int main(){
   
   assert((unsigned int*)get_val_de==NULL);
   cout << "the evictor worked! \n";
-
-
-
-  //add like 20 things and check size
- //check space used
 
 }
 
