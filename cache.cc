@@ -3,20 +3,22 @@
 #include <cassert>
 #include <iostream>
 #include <list>
+
 using namespace std;
 
 struct Cache::Impl{
 
-    const index_type maxmem = 4*sizeof(char); //implementing a Very Small Cache for Testing
+    //const index_type maxmem = 4*sizeof(char); //implementing a Very Small Cache for Testing
     std::unordered_map<std::string, const void*, hash_func> umap;
     std::unordered_map<std::string, unsigned int> space_map;
     int space = 0; 
     hash_func hasher_;
     list<key_type> actual_cache_struct; 
-    Impl(hash_func hasher, evictor_type evictor, int maxmem)
+    Impl(hash_func hasher, evictor_type evictor, int maxmem_)
 
     : umap(0, hasher)
     {
+      const index_type maxmem = maxmem_;
       umap.max_load_factor(0.5);
     }
     
@@ -57,18 +59,12 @@ struct Cache::Impl{
     }
 
     void set(key_type key, val_type value, index_type size){
-
-        cout << "before the while!\n";
-        cout << "maxmem: ";
-        cout << maxmem;
-        cout << "space: ";
-        cout << space;
-        cout << "size: ";
-        cout << size;
-
+      if (size > maxmem){
+          cout << "Sorry, that item is too large for this cache\n";
+          return;
+          }
       while (space + size > maxmem){
-        std::cout << "in loop" << "\t" << space << "\n";
-        cout << "inside the while\n";
+  
         evictor();
       }
       auto void_val = static_cast<const void*>(value);
@@ -76,8 +72,6 @@ struct Cache::Impl{
       space_map[key] = size;
       space += size; 
       actual_cache_struct.push_back(key);
-      cout << "space: ";
-      cout << space << "\n";
 
     }
 
@@ -117,7 +111,7 @@ int main(){
 
   unsigned int asize = sizeof(unsigned int);
 
-  Cache* cache_pointer = new Cache(32,NULL, hash_function);
+  Cache* cache_pointer = new Cache(4,NULL, hash_function);
 
   int* eight = (int*)malloc(sizeof(int));
   *eight = 8;
@@ -128,21 +122,25 @@ int main(){
    int* four = (int*)malloc(sizeof(int));
   *four = 4;
 
+  //1
   cache_pointer->set("key1",eight,sizeof(unsigned int&));
   Cache::val_type get_val = cache_pointer->get("key1",asize);
   assert(*(unsigned int*)get_val==8);
   cout << "The set and get methods did the thing!\n";
 
+` //2
   cache_pointer->del("key1");
   Cache::val_type get_val_del = cache_pointer->get("key1",asize);
   assert((unsigned int*)get_val_del==NULL);
   cout << "The del method did the thing!\n";
 
+  //3
   cache_pointer->set("key1",six,sizeof(unsigned int&));
   Cache::val_type get_va = cache_pointer->get("key1",asize);
   assert(*(unsigned int*)get_va==6);
   cout << "The set and get methods did the thing again!\n";
 
+  //4
   cache_pointer->set("key2",four,sizeof(unsigned int&));
   Cache::val_type get_v = cache_pointer->get("key2",asize);
   assert(*(unsigned int*)get_v==4);
@@ -152,10 +150,24 @@ int main(){
   assert((unsigned int*)get_val_de==NULL);
   cout << "the evictor worked! \n";
 
+  //5
+  s_p = cache_pointer->space_used() ;
+  assert(s_p==4);
+  cout << "space_used worked!\n";
+
+  //6
+  cache_pointer->set("", //something of size 8 bytes)
+
+  free(four);
+  free(six);
+  free(eight);
 
 
-  //add like 20 things and check size
- //check space used
-
-}
-
+  '''
+  - get (check size too)
+  - del
+  - reset
+  - evictor
+  - space_used
+  - add value larger than maxmem
+  '''
