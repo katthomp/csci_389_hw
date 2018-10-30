@@ -6,7 +6,7 @@
   to run the files for evictors.cpp, which was confusing for me.
   
    | Test| PASS?|
-  |------|-------|
+  |------|------|
   |SET/GET| PASS|
   |DEL| PASS|
   |DEL AND REPLACE| PASS|
