@@ -10,7 +10,7 @@
   |SET/GET| PASS|
   |DEL| PASS|
   |DEL AND REPLACE| PASS|
-  |EVICTOR| TRUE|
+  |EVICTOR| PASS|
   |SPACE_USED| FAIL|
   |ADD A TOO-BIG VAL| PASS|
 
@@ -24,7 +24,7 @@ I had no problems compiling and linking these files.
   |SET/GET| PASS|
   |DEL| PASS|
   |DEL AND REPLACE| PASS|
-  |EVICTOR| TRUE|
+  |EVICTOR| PASS|
   |SPACE_USED| FAIL|
   |ADD A TOO-BIG VAL| FAIL|
   
