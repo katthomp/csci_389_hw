@@ -8,7 +8,7 @@ using namespace std;
 
 struct Cache::Impl{
 
-    //const index_type maxmem = 4*sizeof(char); //implementing a Very Small Cache for Testing
+    const index_type maxmem = 4*sizeof(char); //implementing a Very Small Cache for Testing
     std::unordered_map<std::string, const void*, hash_func> umap;
     std::unordered_map<std::string, unsigned int> space_map;
     int space = 0; 
@@ -18,7 +18,7 @@ struct Cache::Impl{
 
     : umap(0, hasher)
     {
-      const index_type maxmem = maxmem_;
+      maxmem = maxmem_;
       umap.max_load_factor(0.5);
     }
     
