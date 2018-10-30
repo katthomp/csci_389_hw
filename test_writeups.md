@@ -4,14 +4,16 @@
   \\include graphics here
   They called an explicit operator and the compiler mistook it for a function. Additionally, there is no specified terminal command
   to run the files for evictors.cpp, which was confusing for me.
- 
-  | Test| PASS?|
+  
+   | Test| PASS?|
   |------|-------|
   |SET/GET| PASS|
   |DEL| PASS|
-  |REASSIGN KEY/GET| PASS|
-  |SECOND KEY:VALUE| PASS|
-  |EVICTOR| FAIL|
+  |DEL AND REPLACE| PASS|
+  |EVICTOR| TRUE|
+  |SPACE_USED| FAIL|
+  |ADD A TOO-BIG VAL| PASS|
+
   
 2. Jillian James and Marika Swanberg
 
@@ -21,6 +23,8 @@ I had no problems compiling and linking these files.
   |------|-------|
   |SET/GET| PASS|
   |DEL| PASS|
-  |REASSIGN KEY/GET| PASS|
-  |SECOND KEY:VALUE| PASS|
-  |EVICTOR| FAIL|
+  |DEL AND REPLACE| PASS|
+  |EVICTOR| TRUE|
+  |SPACE_USED| FAIL|
+  |ADD A TOO-BIG VAL| FAIL|
+  
