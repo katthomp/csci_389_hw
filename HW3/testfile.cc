@@ -105,6 +105,11 @@ void test_five(){
     hash<string> hash_function;
 
     Cache* cache_pointer = new Cache(4,NULL, hash_function);
+    
+    int* eight = (int*)malloc(sizeof(int));
+    *eight = 8;
+
+    cache_pointer->set("key1",eight,sizeof(unsigned int&));
 
     int s_p = cache_pointer->space_used() ;
     assert(s_p==4);
