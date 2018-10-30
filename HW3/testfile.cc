@@ -94,7 +94,7 @@ void test_four(){
   
     Cache::val_type get_val = cache_pointer->get("key1",asize);
       
-    assert((unsigned int*)get_val == NULL);
+    assert(get_val == NULL);
     cout << "the evictor worked! \n";
 
     free(six);
@@ -126,9 +126,10 @@ void test_six(){
 
     Cache::val_type get_val = cache_pointer->get("key1",asize);
 
-    assert((unsigned int*)get_val == NULL);
+    assert(get_val == NULL);
     cout << "checking that we can't add a value that's too big works!\n";
-
+    
+    free(six);
 
 }
 
