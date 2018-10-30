@@ -14,8 +14,8 @@
   
 2. Jillian James and Marika Swanberg
 I had no problems compiling and linking these files. 
-    | Test| PASS?|
-    |------|-------|
+  | Test| PASS?|
+  |------|-------|
   |SET/GET| PASS|
   |DEL| PASS|
   |REASSIGN KEY/GET| PASS|
