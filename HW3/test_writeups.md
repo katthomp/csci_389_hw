@@ -1,6 +1,7 @@
 Part 1:
- |TEST|TEST NAME|DESCRIPTION|PASS?|
-  |------|------|-----------|-----|
+
+  |TEST|TEST NAME|DESCRIPTION|PASS?|
+  |------|------|------|------|
   |SET/GET|test_one|A single get returns correct value and size|PASS|
   |DEL|test_two|a single delete call removes the key|PASS|
   |DEL AND REPLACE|test_three|deleting and replacing the value of a key returns the correct value|PASS|
