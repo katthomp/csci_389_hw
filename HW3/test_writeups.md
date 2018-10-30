@@ -1,3 +1,15 @@
+Part 1:
+ |TEST|TEST NAME|DESCRIPTION|PASS?|
+  |------|------|
+  |SET/GET|test_one|A single get returns correct value and size|PASS
+  |DEL|test_two|a single delete call removes the key|PASS
+  |DEL AND REPLACE|test_three|deleting and replacing the value of a key returns the correct value|PASS
+  |EVICTOR|test_four|if there is not enough space, the evictor is called and removes a key/value pair|PASS
+  |SPACE_USED| test_five|space_used method returns the correct value|PASS
+  |ADD A TOO-BIG VAL|test_six|a value that is too large for the cache is not added|FAIL
+
+Part 2:
+
 1. Betsy Hoekstra and Robert McCaull.
 
   I had problems being able to compile this code, and the terminal gave this error:
