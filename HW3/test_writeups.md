@@ -24,7 +24,7 @@ Part 2:
   |DEL| PASS|
   |DEL AND REPLACE| PASS|
   |EVICTOR| PASS|
-  |SPACE_USED| FAIL|
+  |SPACE_USED| PASS|
   |ADD A TOO-BIG VAL| PASS|
 
   
@@ -38,7 +38,7 @@ I had no problems compiling and linking these files.
   |DEL| PASS|
   |DEL AND REPLACE| PASS|
   |EVICTOR| PASS|
-  |SPACE_USED| FAIL|
+  |SPACE_USED| PASS|
   |ADD A TOO-BIG VAL| FAIL|
   
 3. Josh Reiss and Ezra Schwartz
@@ -50,5 +50,5 @@ Small problem with <cache.hh> instead of "cache.hh", but easily fixed.
   |DEL| PASS|
   |DEL AND REPLACE| PASS|
   |EVICTOR| PASS|
-  |SPACE_USED| FAIL|
+  |SPACE_USED| PASS|
   |ADD A TOO-BIG VAL| PASS|
