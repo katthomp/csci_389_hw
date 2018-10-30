@@ -28,3 +28,13 @@ I had no problems compiling and linking these files.
   |SPACE_USED| FAIL|
   |ADD A TOO-BIG VAL| FAIL|
   
+3. Josh Reiss and Ezra Schwartz
+Small problem with <cache.hh> instead of "cache.hh", but easily fixed.
+  | Test| PASS?|
+  |------|-------|
+  |SET/GET| PASS|
+  |DEL| PASS|
+  |DEL AND REPLACE| PASS|
+  |EVICTOR| PASS|
+  |SPACE_USED| FAIL|
+  |ADD A TOO-BIG VAL| PASS|
