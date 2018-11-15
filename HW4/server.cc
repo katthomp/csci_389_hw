@@ -1,15 +1,12 @@
 #include "cache.hh"
-//#include <cxxopts.hpp>
-//#include <algorithm>
 #include <pistache/http.h>
 #include <pistache/router.h>
-//#include <pistache/endpoint.h>
+#include <pistache/endpoint.h>
 #include <string>
 #include <pistache/http_headers.h>
 
-//connect cache.cc anx server.cc in makefile
+//connect cache.cc and server.cc in makefile
 Cache *cache_ptr;
-
 
 using namespace std;
 using namespace Pistache;
@@ -17,29 +14,6 @@ using namespace Pistache;
 class Handler : public Http::Handler {
     HTTP_PROTOTYPE(Handler)
 
-    //write methods that interact with cache here
-    //std::string get_key_value(auto k, auto s){
-    //    uint32_t val = cache_ptr->get(k,s);
-    //    std:: string json = "{ key: " + k + ", value: " + std::to_string(val) + " }";
-     //   return json;
-    //}
-
-    //std::string get_memused(){
-     //   auto mem_used = cache_ptr->space_used();
-    //    auto s_mem_used = std::to_string(mem_used);
-    //    auto json = "{ memsize: " + s_mem_used + " }";
-    //    return json;
-   // }
-
-    //void put(auto k, auto v){
-    //    cache_ptr->set(k,v);
-    //    return;
-    //}
-
-    //void del(auto k){
-     //   cache_ptr->del(k);
-     //   return;
-    //}
 
 
 void onRequest(const Http::Request& req, Http::ResponseWriter response) override {
@@ -62,15 +36,6 @@ void onRequest(const Http::Request& req, Http::ResponseWriter response) override
             }
         }
 
-        //for (i=1;i=req_string.length();i++){
-         //   char& current_char = req_string[i];
-         //   if (current_char.find("/")){
-         //      current_word += current_char*;
-         //   } else {
-         //       current_word = current_word + words[i];
-         //       i += 1;
-         //   }
-
         if (req.method() == Http::Method::Get) {
             using namespace Http;
                 if (words[1] == ""){
@@ -82,19 +47,17 @@ void onRequest(const Http::Request& req, Http::ResponseWriter response) override
                 } else {
                     Cache::index_type s;
                     auto val = cache_ptr->get(words[1],s);
-                    void* b = const_cast<void*>(val);
-                    uint32_t* c = static_cast<uint32_t>(b);
-                    std::string* e = static_cast<std::string>(c);
-                    std::string json = ("{ key: " + words[1] + ", value: " + e + " }");
+                    char *character_value = (char*)val;
+                    std::string string_value(character_value);
+                    std::string json = ("{ key: " + words[1] + ", value: " + string_value + " }");
                     //auto get = Handler.get_key_value(words[1],s);
                     response.send(Http::Code::Ok, json);
                 }
         } else if (req.method() == Http::Method::Put) {
             using namespace Http;
-                Cache::index_type s;
-                int v_1 = std::stoi(words[2]);
-                Cache::val_type v = (Cache::val_type)v_1;
-                cache_ptr->set(words[1],v,s);
+                uint32_t size = words[2].size();
+                const void* v = words[2].c_str();
+                cache_ptr->set(words[1],v,size);
                 //Handler.put(words[1],v);
 
         } else if (req.method() == Http::Method::Delete){
@@ -109,36 +72,25 @@ void onRequest(const Http::Request& req, Http::ResponseWriter response) override
         } else if (req.method() == Http::Method::Post){
             using namespace Http;
                 exit(0);
-              //che k that words[0]==shutdown
-              //exit handler 
-            //stop accepting requests, clean up cache, exit cleanly??
         } else {
             exit(-1);
         }
-
-        //parse string
-        //wrtite header (if someone requests memused?)
-        //response.send(Http::Code::ok, "string goes here")
     }
 };
 
-//"/key/name/value/"
-    
 
 
-int main(int argc, char *argv[]){//argv){
-    //string port = argv[1] 
-    //int maxmem = argv[2]
+int main(int argc, char *argv[]){
     auto maxmem = 32*sizeof(char);
     auto portnum = 2345;
     if (argc = 4){
-        maxmem = (int)argv[2];
-        portnum = (int)argv[4];
+        int maxmem = atoi(argv[2]);
+        portnum = atoi(argv[4]);
     } else if (argc = 2){
         if (argv[1] == "-m"){
-            maxmem = (int)argv[2];
+            maxmem = atoi(argv[2]);
         } else if (argv[1] == "-t"){
-            portnum = (int)argv[2];
+            portnum = atoi(argv[2]);
         }
     }
 
@@ -146,10 +98,6 @@ int main(int argc, char *argv[]){//argv){
 
     //how many clients?
     int thr = 1;
-
-    //if (argc >= 2) {
-     //   port = std::stol(argv[1]);
-    //}
 
     cache_ptr = new Cache(maxmem);
 
@@ -160,8 +108,8 @@ int main(int argc, char *argv[]){//argv){
 
     auto server = std::make_shared<Http::Endpoint>(addr);
 
-    auto opts = Http::Endpoint::options();
-        .threads(thr);
+    auto opts = Http::Endpoint::options()
+        .threads(thr)
         .flags(Tcp::Options::InstallSignalHandler);
     server->init(opts);
     server->setHandler(Http::make_handler<Handler>());
