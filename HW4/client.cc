@@ -1,12 +1,13 @@
+
 #include "cache.hh"
 #include <unordered_map>
 #include <cassert>
 #include <iostream>
 #include <list>
 #include <string>
-#include <istream>
-#include <ostream>
+#include <fstream>
 #include <cstring>
+#include <sstream>
 #include <boost/asio.hpp>
 using namespace std;
 
@@ -59,7 +60,7 @@ struct Cache::Impl{
       return;
     }
 
-    void get(key_type key, index_type& val_size){
+    Cache::val_type get(key_type key, index_type& val_size){
 
       //std::string get_key= ur
       boost::asio::streambuf request;
@@ -81,18 +82,18 @@ struct Cache::Impl{
     if (!response_stream || http_version.substr(0, 5) != "HTTP/")
     {
       std::cout << "Invalid response\n";
-      return ;
+      return 0;
     }
     if (status_code != 200)
     {
       std::cout << "Response returned with status code " << status_code << "\n";
-      return ;
+      return 0;
     }
-      return;
+      return 0;
     }
 
-    void space_used(){
-      return;
+    int space_used(){
+      return 0;
     }
 
     void set(key_type key, val_type value, index_type size){
@@ -136,10 +137,12 @@ struct Cache::Impl{
 
       boost::asio::streambuf response;
       boost::asio::read_until(socket, response, "\r\n");
-      std::ostream response_stream(&response);
-      while (std::getline(response_stream, header) && header != "\r")
-      std::cout << header << "\n";
-      std::cout << "\n";
+      std::istream response_stream(&response);
+      while (std::getline(response_stream, header) && header != "\r"){
+        std::cout << header << "\n";
+        std::cout << "\n";
+      }
+      
       return;
     }
 
