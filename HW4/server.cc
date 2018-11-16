@@ -4,6 +4,10 @@
 #include <pistache/endpoint.h>
 #include <string>
 #include <pistache/http_headers.h>
+#include <pistache/net.h>
+#include <pistache/peer.h>
+#include <pistache/cookie.h>
+
 
 //connect cache.cc and server.cc in makefile
 Cache *cache_ptr;
@@ -66,8 +70,8 @@ void onRequest(const Http::Request& req, Http::ResponseWriter response) override
                 //Handler.del(words[1]);
 
         } else if (req.method() == Http::Method::Head){
-            auto head = req.headers();
-            response.send(Http::Code::Ok, head);
+            auto head = response.headers();
+            //response.send(Http::Code::Ok, head);
 
         } else if (req.method() == Http::Method::Post){
             using namespace Http;
@@ -77,8 +81,6 @@ void onRequest(const Http::Request& req, Http::ResponseWriter response) override
         }
     }
 };
-
-
 
 int main(int argc, char *argv[]){
     auto maxmem = 32*sizeof(char);
