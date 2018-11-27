@@ -1,14 +1,6 @@
 -how fast does the server respond to several requests (scaling by the scale of requests)
-
--test different workloads
-	-something where there’s a lot of GET requests, many invalid
-
-	-many SET requests
-	-mix of SET/GET
-	-mix of SET/DELETE
-	-basically go by the workloads described in Eitan’s paper
-	
-
+####Goals:	
+1. We want to measure the mean response time of maximum 
 
 
 2.
