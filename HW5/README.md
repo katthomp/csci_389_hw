@@ -18,3 +18,7 @@ response time remains under 1 millisecond), as well as mean response time and ac
 5. Factors: number of gets/second, number of sets/second, size of values.
 
 6. 
+
+7. After reading the papers on workload analysis of a large-scale key-value store and many-core key-value store, we decided that it would be reasonable to use a distribution made up of 3/4 get requests and 1/4 deletes, as write requests seem to be a lot faster and have little impact on the timing. We chose to make the majority of our distrubtion read requests and a smaller proportion deletes to mimic a potentially likely distribution in actual usage of a cache. Obviously we've made a lot of assumptions and simplifications in choosing to use this fixed distribution partly because this cache isn't actually intended to be used for any purpose, so it is difficult to ascertain any particular sense of 'normal' usage and partly to make our lives easier while trying to complete this assignment.
+
+8. 
